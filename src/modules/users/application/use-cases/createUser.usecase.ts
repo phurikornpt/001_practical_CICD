@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User, CreateUserInput } from '../../domain/entities/user.entity';
+import { User } from '../../domain/entities/user.entity';
 import { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { UserDTO } from '../dto/user-dto';
 import { ApiProperty } from '@nestjs/swagger';
