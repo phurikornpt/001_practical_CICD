@@ -1,9 +1,5 @@
 import { validate } from 'class-validator';
-import {
-  UserProfile,
-  CreateUserProfileInput,
-  LoadUserInput,
-} from '../user.profile.entity';
+import { UserProfile, CreateUserProfileInput } from '../user.profile.entity';
 
 describe('UserProfile Entity', () => {
   describe('CreateUserProfileInput Validation', () => {

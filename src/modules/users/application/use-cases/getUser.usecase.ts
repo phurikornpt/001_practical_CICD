@@ -15,8 +15,6 @@ export class GetAllUserUseCase {
       throw new Error('No users found');
     }
 
-    
-
     return users.map((u) => UserDTO.load(u));
   }
 }
