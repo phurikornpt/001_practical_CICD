@@ -16,6 +16,8 @@ steps:
       '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${COMMIT_SHA}'
     ]
 
+options:
+  logging: CLOUD_LOGGING_ONLY
 # การใช้ 'images' ใน Cloud Build จะช่วยยืนยันว่า Artifact นี้จะถูกบันทึกใน Build History
 images:
   - '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${COMMIT_SHA}'
