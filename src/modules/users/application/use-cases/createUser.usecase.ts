@@ -2,8 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../../domain/entities/user.entity';
 import { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { UserDTO } from '../dto/user-dto';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ApiBody, ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import {
+  CreateUserProfileInput,
+  UserProfile,
+} from '../../domain/entities/user.profile.entity';
 
 export class CreateUserDTO {
   @ApiProperty({ description: 'Username of the user' })
@@ -16,6 +20,10 @@ export class CreateUserDTO {
   @IsString()
   @IsEmail()
   email: string;
+
+  @ApiProperty({ description: 'User profile' })
+  @IsObject({ each: true })
+  userProfile?: CreateUserProfileInput;
 }
 
 @Injectable()
@@ -31,7 +39,13 @@ export class CreateUserUseCase {
       throw new Error('User already exists');
     }
 
-    const user = User.create(command);
+    const userProfile = UserProfile.create({
+      bio: command?.userProfile?.bio || '',
+      avatar: command?.userProfile?.avatar || '',
+      location: command?.userProfile?.location || '',
+    });
+
+    const user = User.create({ ...command, userProfile });
 
     await this.userRepository.save(user);
 
