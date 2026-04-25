@@ -25,5 +25,5 @@ images:
 # ตัวแปรเสริม (Substitutions) เพื่อให้จัดการง่าย
 substitutions:
   _LOCATION: asia-southeast1   # หรือภูมิภาคที่คุณเลือก
-  _REPO_NAME: my-nestjs-repo   # ชื่อ Repository ที่คุณสร้างใน Artifact Registry
+  _REPO_NAME: practical-ci001   # ชื่อ Repository ที่คุณสร้างใน Artifact Registry
   _IMAGE_NAME: practic-ci-cd   # ชื่อ Image ที่ต้องการ

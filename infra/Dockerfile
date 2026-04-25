@@ -29,11 +29,10 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN HUSKY=0 npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 # Copy the built application from the development stage
 COPY --from=development /app/dist ./dist
-COPY --from=development /app/node_modules ./node_modules
 COPY --from=development /app/package.json ./package.json
 
 # Expose the port the app runs on
