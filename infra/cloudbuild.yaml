@@ -1,0 +1,27 @@
+steps:
+  # 1. Build the Docker image
+  # รูปแบบของ Artifact Registry: LOCATION-docker.pkg.dev/PROJECT_ID/REPO_NAME/IMAGE_NAME:TAG
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${COMMIT_SHA}', 
+      '-f', 'infra/Dockerfile', 
+      '.'
+    ]
+
+  # 2. Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${COMMIT_SHA}'
+    ]
+
+# การใช้ 'images' ใน Cloud Build จะช่วยยืนยันว่า Artifact นี้จะถูกบันทึกใน Build History
+images:
+  - '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${COMMIT_SHA}'
+
+# ตัวแปรเสริม (Substitutions) เพื่อให้จัดการง่าย
+substitutions:
+  _LOCATION: asia-southeast1   # หรือภูมิภาคที่คุณเลือก
+  _REPO_NAME: my-nestjs-repo   # ชื่อ Repository ที่คุณสร้างใน Artifact Registry
+  _IMAGE_NAME: practic-ci-cd   # ชื่อ Image ที่ต้องการ
