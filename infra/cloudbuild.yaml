@@ -30,9 +30,9 @@ steps:
       '--image', 'us-docker.pkg.dev/cloud-ops-agents-artifacts/cloud-run-gmp-sidecar/cloud-run-gmp-sidecar:1.2.0',
       '--memory', '256Mi',
       '--cpu', '0.5',
-      '--add-volume', 'name=cfg,type=secret,secret=${_GMP_CONFIG_SECRET}',
-      '--add-volume-mount', 'volume=cfg,mount-path=/etc/rungmp',
-      '--region', '${_LOCATION}'
+      '--set-secrets', '/etc/rungmp/config.yaml=${_GMP_CONFIG_SECRET}:latest',
+      '--region', '${_LOCATION}',
+      '--allow-unauthenticated'
     ]
 
 options:
