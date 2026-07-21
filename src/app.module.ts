@@ -17,7 +17,7 @@ import { httpMetricsProviders } from './metrics/metrics.providers';
     PrometheusModule.register({
       path: '/metrics',
       defaultMetrics: { enabled: true }, // node/process metrics (heap, event loop) — cardinality ต่ำ ปลอดภัย
-      defaultLabels: { service: 'example-service-api' },
+      defaultLabels: { service: 'example-service-api-v2' },
     }),
   ],
   controllers: [AppController],

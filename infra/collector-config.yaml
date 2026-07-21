@@ -1,7 +1,9 @@
-combined:
-  scrape_configs:
-    - job_name: app
-      scrape_interval: 30s
-      static_configs:
-        - targets: ['localhost:3000']
-      metrics_path: /metrics
+apiVersion: monitoring.googleapis.com/v1beta
+kind: RunMonitoring
+metadata:
+  name: example-service-api-v2
+spec:
+  endpoints:
+    - port: "3000"
+      path: /metrics
+      interval: 30s
