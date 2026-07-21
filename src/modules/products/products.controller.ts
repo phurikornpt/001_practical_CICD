@@ -1,5 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { MockLatency } from '../../common/mock-latency';
 
 export class CreateProductDto {
   @ApiProperty({ example: 'Notebook' })
@@ -17,6 +25,7 @@ const products = [
 
 @ApiTags('products')
 @Controller('products')
+@UseInterceptors(MockLatency(50, 300)) // mid latency
 export class ProductsController {
   @Get()
   @ApiOperation({ summary: 'List products (mock)' })

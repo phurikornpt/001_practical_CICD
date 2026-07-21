@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
 import {
   CreateUserUseCase,
   CreateUserDTO,
@@ -6,9 +6,11 @@ import {
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserDTO } from '../../application/dto/user-dto';
 import { GetAllUserUseCase } from '../../application/use-cases/getUser.usecase';
+import { MockLatency } from '../../../../common/mock-latency';
 
 @ApiTags('users')
 @Controller('users')
+@UseInterceptors(MockLatency(20, 120)) // fast reads/writes
 export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
