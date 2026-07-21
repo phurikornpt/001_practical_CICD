@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { startMetricsServer } from './metrics/metrics.server';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,7 +15,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Practical CI/CD API')
-    .setDescription('Mock APIs + Prometheus metrics at GET /metrics')
+    .setDescription('Mock APIs (metrics scraped privately on :9090)')
     .setVersion('1.0')
     .addTag('users')
     .addTag('products')
@@ -24,5 +25,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
+  startMetricsServer(); // sidecar scrape → 127.0.0.1:9090/metrics
 }
 bootstrap();

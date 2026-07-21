@@ -4,12 +4,16 @@ import {
   ExecutionContext,
   CallHandler,
   HttpException,
+  Inject,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Counter, Histogram } from 'prom-client';
 import { Request, Response } from 'express';
+import {
+  HTTP_REQUEST_DURATION_SECONDS,
+  HTTP_REQUESTS_TOTAL,
+} from './metrics.tokens';
 
 /** Express types `req.route` as any — narrow before using as a Prometheus label. */
 function resolveRouteTemplate(req: Request): string {
@@ -24,20 +28,14 @@ function resolveRouteTemplate(req: Request): string {
 @Injectable()
 export class MetricsInterceptor implements NestInterceptor {
   constructor(
-    @InjectMetric('http_requests_total')
+    @Inject(HTTP_REQUESTS_TOTAL)
     private readonly requests: Counter<string>,
-    @InjectMetric('http_request_duration_seconds')
+    @Inject(HTTP_REQUEST_DURATION_SECONDS)
     private readonly duration: Histogram<string>,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const req = context.switchToHttp().getRequest<Request>();
-
-    // ข้าม /metrics เอง — ไม่นับ scrape เป็น traffic
-    if (req.path === '/metrics') {
-      return next.handle();
-    }
-
     const start = process.hrtime.bigint();
     const method = req.method;
     // ใช้ route template ไม่ใช่ req.url — กัน cardinality explosion บน GMP

@@ -4,7 +4,7 @@ metadata:
   name: example-service-api-v2   # ชื่อ service คุณ
 spec:
   endpoints:
-  - port: 8080          # ต้องตรงกับ Nest listen (ดูด้านล่าง)
+  - port: 9090          # metrics bare server (ไม่ใช่ Nest public PORT)
     path: /metrics
     interval: 30s
   targetLabels:

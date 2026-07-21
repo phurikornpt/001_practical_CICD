@@ -4,6 +4,7 @@ metadata:
   name: example-service-api-v2
 spec:
   endpoints:
-    - port: "3000"
+    # scrape metrics server ใน app container (ไม่ใช่ Nest public PORT)
+    - port: "9090"
       path: /metrics
       interval: 30s

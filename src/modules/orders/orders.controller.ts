@@ -2,14 +2,18 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   Param,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
-import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Counter, Gauge } from 'prom-client';
 import { MockLatency } from '../../common/mock-latency';
+import {
+  ORDERS_CREATED_TOTAL,
+  ORDERS_PENDING,
+} from '../../metrics/metrics.tokens';
 
 export class CreateOrderDto {
   @ApiProperty({ example: 'p-1' })
@@ -37,9 +41,9 @@ const orders: Order[] = [
 @UseInterceptors(MockLatency(100, 800)) // heavier path — slower + fatter p99
 export class OrdersController {
   constructor(
-    @InjectMetric('orders_created_total')
+    @Inject(ORDERS_CREATED_TOTAL)
     private readonly ordersCreated: Counter<string>,
-    @InjectMetric('orders_pending')
+    @Inject(ORDERS_PENDING)
     private readonly ordersPending: Gauge<string>,
   ) {
     this.syncPendingGauge();
