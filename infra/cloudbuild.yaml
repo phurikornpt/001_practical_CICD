@@ -20,7 +20,7 @@ steps:
   #    Sidecar config is mounted from Secret Manager, not baked into an image.
   - name: 'gcr.io/cloud-builders/gcloud'
     args: [
-      'run', 'deploy', '${_SERVICE_NAME}',
+      'beta', 'run', 'deploy', '${_SERVICE_NAME}',
       '--container', 'app',
       '--image', '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/${_IMAGE_NAME}:${COMMIT_SHA}',
       '--port', '3000',
@@ -30,8 +30,8 @@ steps:
       '--image', 'us-docker.pkg.dev/cloud-ops-agents-artifacts/cloud-run-gmp-sidecar/cloud-run-gmp-sidecar:1.2.0',
       '--memory', '256Mi',
       '--cpu', '0.5',
-      '--volume', 'name=cfg,type=secret,secret=${_GMP_CONFIG_SECRET}',
-      '--volume-mount', 'volume=cfg,mount-path=/etc/rungmp',
+      '--add-volume', 'name=cfg,type=secret,secret=${_GMP_CONFIG_SECRET}',
+      '--add-volume-mount', 'volume=cfg,mount-path=/etc/rungmp',
       '--region', '${_LOCATION}'
     ]
 
