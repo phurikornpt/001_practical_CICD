@@ -47,6 +47,6 @@ substitutions:
   _LOCATION: asia-southeast1   # หรือภูมิภาคที่คุณเลือก
   _REPO_NAME: practical-ci001   # ชื่อ Repository ที่คุณสร้างใน Artifact Registry
   _IMAGE_NAME: practic-ci-cd   # ชื่อ Image ที่ต้องการ
-  _SERVICE_NAME: example-service-api   # ชื่อ Cloud Run service
+  _SERVICE_NAME: example-service-api-v2   # ชื่อ Cloud Run service
   _GMP_CONFIG_SECRET: gmp-collector-config   # ชื่อ Secret ที่เก็บ collector config.yaml
   _RUNTIME_SA: hello-621@research-489512.iam.gserviceaccount.com   # SA ที่ Cloud Run service ใช้รัน (default compute SA ถูกลบไปแล้ว)
