@@ -7,10 +7,7 @@ import { UsersModule } from './modules/users/users.module';
 import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { MetricsInterceptor } from './metrics/metrics.interceptor';
-import {
-  httpMetricsProviders,
-  examMetricsProviders,
-} from './metrics/metrics.providers';
+import { httpMetricsProviders } from './metrics/metrics.providers';
 
 @Module({
   imports: [
@@ -27,7 +24,6 @@ import {
   providers: [
     AppService,
     ...httpMetricsProviders,
-    ...examMetricsProviders,
     { provide: APP_INTERCEPTOR, useClass: MetricsInterceptor },
   ],
 })

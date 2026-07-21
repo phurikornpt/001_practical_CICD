@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter, Gauge } from 'prom-client';
 
 export class CreateOrderDto {
   @ApiProperty({ example: 'p-1' })
@@ -9,8 +11,15 @@ export class CreateOrderDto {
   quantity!: number;
 }
 
+type Order = {
+  id: string;
+  productId: string;
+  quantity: number;
+  status: 'pending' | 'shipped';
+};
+
 // ponytail: in-memory mock only — swap for real store when needed
-const orders = [
+const orders: Order[] = [
   { id: 'o-1', productId: 'p-1', quantity: 2, status: 'pending' },
   { id: 'o-2', productId: 'p-2', quantity: 10, status: 'shipped' },
 ];
@@ -18,6 +27,15 @@ const orders = [
 @ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
+  constructor(
+    @InjectMetric('orders_created_total')
+    private readonly ordersCreated: Counter<string>,
+    @InjectMetric('orders_pending')
+    private readonly ordersPending: Gauge<string>,
+  ) {
+    this.syncPendingGauge();
+  }
+
   @Get()
   @ApiOperation({ summary: 'List orders (mock)' })
   findAll() {
@@ -34,12 +52,33 @@ export class OrdersController {
   @ApiOperation({ summary: 'Create order (mock)' })
   @ApiBody({ type: CreateOrderDto })
   create(@Body() body: CreateOrderDto) {
-    const order = {
-      id: `o-${orders.length + 1}`,
-      ...body,
-      status: 'pending',
-    };
-    orders.push(order);
-    return order;
+    try {
+      if (
+        !body.productId ||
+        !Number.isFinite(body.quantity) ||
+        body.quantity < 1
+      ) {
+        this.ordersCreated.inc({ result: 'invalid' });
+        return { message: 'invalid productId or quantity' };
+      }
+
+      const order: Order = {
+        id: `o-${orders.length + 1}`,
+        productId: body.productId,
+        quantity: body.quantity,
+        status: 'pending',
+      };
+      orders.push(order);
+      this.ordersCreated.inc({ result: 'success' });
+      this.syncPendingGauge();
+      return order;
+    } catch {
+      this.ordersCreated.inc({ result: 'error' });
+      return { message: 'failed to create order' };
+    }
+  }
+
+  private syncPendingGauge() {
+    this.ordersPending.set(orders.filter((o) => o.status === 'pending').length);
   }
 }
